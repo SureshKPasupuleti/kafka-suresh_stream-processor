@@ -9,6 +9,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -24,11 +25,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableKafkaStreams
 public class StreamConfig { 
 
+    @Value("${kafkaStream.bootStrapServer}")
+    private String bootStrapServer;
+
+    @Value("${kafkaStream.applicationId}")
+    private String applicationId;
+
+    @Value("${kafkaStream.producerTopic}")
+    private String producerTopic;
+
+    @Value("${kafkaStream.consumerTopic}")
+    private String consumerTopic;
+
+    @Value("${kafkaStream.groupEmailID}")
+    private String groupEmailID;
+
+
 	@Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
 	public StreamsConfig kStreamsConfigs() {
 		Map<String, Object> props = new HashMap<>();
-		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		props.put(StreamsConfig.APPLICATION_ID_CONFIG, "testStreams");
+		//props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "104.42.108.238:9092");
+		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServer);
+		props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
 		props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 		props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 		props.put(StreamsConfig.TIMESTAMP_EXTRACTOR_CLASS_CONFIG, WallclockTimestampExtractor.class.getName());
@@ -40,9 +58,9 @@ public class StreamConfig {
 	}
 	@Bean
 	public KStream<Integer, String> kStream(KStreamBuilder kStreamBuilder) {
-		KStream<Integer, String> stream = kStreamBuilder.stream("employee");
+		KStream<Integer, String> stream = kStreamBuilder.stream(producerTopic);
 		stream.mapValues(String -> ObjectUpdateMethod(String)).
-		to("employeeEmail");
+		to(consumerTopic);
 		stream.print();
 
 		return stream;
@@ -53,7 +71,6 @@ public class StreamConfig {
 	}
 	private String ObjectUpdateMethod(String arg0) {
 		String result="";
-		String groupEmailAddress = "kumarpasupuleti@gmail.com";
 		try {
 			Employer employer=objectMapper().readValue(arg0, Employer.class);
 			Employer employerUpdate=new Employer();
@@ -61,7 +78,7 @@ public class StreamConfig {
 			employerUpdate.setFirstName(employer.getFirstName());
 			employerUpdate.setLastName(employer.getLastName());
 			employerUpdate.setEmployeeEmailAddress(employer.getEmployeeEmailAddress());
-			employerUpdate.setGroupEmailAddress(groupEmailAddress);
+			employerUpdate.setGroupEmailAddress(groupEmailID);
 			employerUpdate.setEnrolledForBenefits(employer.getEnrolledForBenefits());
 			employerUpdate.setEnrolledForMedicalInsurance(employer.getEnrolledForMedicalInsurance());
 			employerUpdate.setLocation(employer.getLocation());

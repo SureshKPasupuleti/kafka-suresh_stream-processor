@@ -1,3 +1,4 @@
+defaultTasks = ['clean','build']
 buildscript {
 	ext {
 		springBootVersion = '1.5.7.RELEASE'
@@ -14,7 +15,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
-group = 'com.example'
+group = 'com.kafka.stream.processor'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 

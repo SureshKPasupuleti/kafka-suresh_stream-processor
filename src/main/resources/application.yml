@@ -1,5 +1,13 @@
 server:
-  port: 8084
+  port: 8085
+kafkaStream:
+  bootStrapServer: localhost:9092
+  applicationId: testStreams
+  producerTopic: employee
+  consumerTopic: emailemployee
+  groupEmailID: kumarpasupuleti@gmail.com
+
+
   
   
  

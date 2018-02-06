@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 @EnableKafka
 @EnableKafkaStreams
-public class StreamConfig { 
+public class StreamConfig {
 
     @Value("${kafkaStream.bootStrapServer}")
     private String bootStrapServer;
@@ -43,8 +43,7 @@ public class StreamConfig {
 
 	@Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
 	public StreamsConfig kStreamsConfigs() {
-		Map<String, Object> props = new HashMap<>();
-		//props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "104.42.108.238:9092");
+		Map<String, Object> props = new HashMap<>();		
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServer);
 		props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
 		props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
@@ -58,9 +57,9 @@ public class StreamConfig {
 	}
 	@Bean
 	public KStream<Integer, String> kStream(KStreamBuilder kStreamBuilder) {
-		KStream<Integer, String> stream = kStreamBuilder.stream(producerTopic);
+		KStream<Integer, String> stream = kStreamBuilder.stream(consumerTopic);
 		stream.mapValues(String -> ObjectUpdateMethod(String)).
-		to(consumerTopic);
+		to(producerTopic);
 		stream.print();
 
 		return stream;

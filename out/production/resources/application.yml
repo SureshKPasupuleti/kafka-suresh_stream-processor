@@ -1,11 +1,11 @@
 server:
-  port: 8085
+  port: 9086
 kafkaStream:
-  bootStrapServer: localhost:9092
+  bootStrapServer: 137.117.10.35:9092
   applicationId: testStreams
-  producerTopic: employee
-  consumerTopic: emailemployee
-  groupEmailID: kumarpasupuleti@gmail.com
+  producerTopic: kafkaPocStreaming1Exchange
+  consumerTopic: sampletest1
+  groupEmailID: rsara@nisum.com
 
 
   
